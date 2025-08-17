@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import emailjs from '@emailjs/browser';
 import {
   Rocket,
   Zap,
@@ -279,16 +280,32 @@ export default function App() {
     setIsSubmitting(true);
     setFormErrors({});
     
-    // 実際のAPI送信をシミュレート
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // EmailJS初期化
+      emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "YOUR_PUBLIC_KEY");
       
-      // 実際の実装では、ここでAPIを呼び出す
-      // const response = await fetch('/api/demo-request', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ ...formData, consultOnly })
-      // });
+      const templateParams = {
+        to_email: 'contact@rikuzero.jp',
+        from_name: formData.person,
+        company_name: formData.company,
+        reply_to: formData.email,
+        datetime: formData.datetime || '後日調整',
+        consult_only: consultOnly ? 'はい（話だけ聞きたい）' : 'いいえ（デモ希望）',
+        message: `
+会社名: ${formData.company}
+ご担当者名: ${formData.person}
+メールアドレス: ${formData.email}
+希望日時: ${formData.datetime || '後日調整'}
+話だけ聞きたい: ${consultOnly ? 'はい' : 'いいえ'}
+        `.trim()
+      };
+      
+      // EmailJS送信
+      await emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID',
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID',
+        templateParams
+      );
       
       console.log('Form submitted:', { ...formData, consultOnly });
       setSubmitSuccess(true);
@@ -894,7 +911,7 @@ export default function App() {
           </div>
           <div className="text-sm">
             <div className="text-white font-semibold">お問い合わせ</div>
-            <p className="mt-2">demo@speed-to-lead.jp</p>
+            <p className="mt-2">contact@rikuzero.jp</p>
             <p className="mt-1">080-7798-1037</p>
             <p className="mt-1 text-xs">平日 10:00-18:00</p>
           </div>

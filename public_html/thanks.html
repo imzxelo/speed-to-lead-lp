@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>お問い合わせありがとうございます - リクゼロ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+        }
+        
+        .icon svg {
+            width: 40px;
+            height: 40px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+        
+        h1 {
+            color: #1e293b;
+            font-size: 28px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        p {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .highlight {
+            color: #0ea5e9;
+            font-weight: 600;
+        }
+        
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 100%);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(34, 211, 238, 0.3);
+        }
+        
+        .info-box {
+            background: #f8fafc;
+            border-left: 4px solid #22d3ee;
+            padding: 15px;
+            margin: 30px 0;
+            text-align: left;
+            border-radius: 8px;
+        }
+        
+        .info-box h3 {
+            color: #1e293b;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .info-box ul {
+            list-style: none;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .info-box li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .info-box li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #22d3ee;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">
+            <svg viewBox="0 0 24 24">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+        </div>
+        
+        <h1>お問い合わせありがとうございます</h1>
+        
+        <p>
+            お問い合わせを受け付けました。<br>
+            <span class="highlight">1営業日以内</span>に担当者よりご連絡いたします。
+        </p>
+        
+        <div class="info-box">
+            <h3>次のステップ</h3>
+            <ul>
+                <li>担当者がお問い合わせ内容を確認します</li>
+                <li>ご記入いただいたメールアドレスに返信します</li>
+                <li>デモのご希望があれば日程調整をご案内します</li>
+            </ul>
+        </div>
+        
+        <p>
+            お急ぎの場合は、お電話でもお問い合わせください：<br>
+            <strong>080-7798-1037</strong><br>
+            （平日 10:00-18:00）
+        </p>
+        
+        <a href="/" class="button">トップページに戻る</a>
+        
+        <div class="footer">
+            <p>© 2024 リクゼロ - 反響対応を60秒で自動化</p>
+        </div>
+    </div>
+    
+    <script>
+        // 5秒後に自動的にトップページへリダイレクト（オプション）
+        // setTimeout(() => {
+        //     window.location.href = '/';
+        // }, 5000);
+    </script>
+</body>
+</html>

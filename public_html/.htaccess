@@ -1,0 +1,64 @@
+# ==============================================
+# リクゼロ - セキュリティ設定
+# ==============================================
+
+# PHPエラー表示を無効化（本番環境）
+php_flag display_errors off
+php_flag log_errors on
+
+# セッションセキュリティ
+php_flag session.cookie_httponly on
+php_flag session.cookie_secure on
+php_flag session.use_only_cookies on
+
+# ディレクトリ一覧表示を無効化
+Options -Indexes
+
+# .htaccess自体へのアクセスを拒否
+<Files .htaccess>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# config.phpへの直接アクセスを拒否
+<Files config.php>
+    Order allow,deny
+    Deny from all
+</Files>
+
+# privateディレクトリへのアクセスを拒否
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^private/ - [F,L]
+</IfModule>
+
+# ログディレクトリへのアクセスを拒否
+<IfModule mod_rewrite.c>
+    RewriteRule ^logs/ - [F,L]
+</IfModule>
+
+# 文字エンコーディング
+AddDefaultCharset UTF-8
+
+# キャッシュコントロール（静的ファイル）
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+</IfModule>
+
+# MIME Type設定
+AddType application/json .json
+AddType application/font-woff2 .woff2
+
+# XSS Protection
+<IfModule mod_headers.c>
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

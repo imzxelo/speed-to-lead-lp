@@ -21,4 +21,24 @@ dist-ssr
 *.ntvs*
 *.njsproj
 *.sln
-*.sw? 
+*.sw?
+
+# PHP / Lolipop specific
+private/
+public_html/config.php
+public_html/vendor/
+public_html/logs/
+*.log
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Composer
+composer.lock
+
+# Sensitive files
+**/config.php
+**/*_config.php
+smtp_settings.php 
