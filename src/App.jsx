@@ -15,7 +15,12 @@ import {
   ArrowRight,
   Building2,
   TimerReset,
-  LineChart
+  LineChart,
+  AlertCircle,
+  XCircle,
+  TrendingDown,
+  Users,
+  Clock
 } from "lucide-react";
 
 // UI Components
@@ -85,21 +90,95 @@ const GradientBG = () => (
 
 function EvidenceChart() {
   return (
-    <div className="rounded-2xl bg-white p-5 shadow border border-gray-200">
-      <div className="flex items-center gap-2 text-sm text-gray-500"><BarChart3 className="h-4 w-4"/>反響寿命（5分で急落）</div>
-      <svg viewBox="0 0 600 200" className="mt-2 w-full" role="img" aria-label="5分経過で返信率が下がるグラフ">
+    <div className="rounded-2xl bg-gradient-to-br from-red-50 to-orange-50 p-5 shadow-lg border-2 border-red-200 relative overflow-hidden">
+      <div className="absolute -top-12 -right-12 h-32 w-32 bg-red-100 rounded-full opacity-50"/>
+      <div className="flex items-center gap-2 text-sm font-semibold text-red-700">
+        <AlertCircle className="h-5 w-5 animate-pulse"/>
+        <span>致命的な5分の壁</span>
+      </div>
+      <svg viewBox="0 0 600 250" className="mt-3 w-full" role="img" aria-label="5分経過で返信率が急落するグラフ">
         <defs>
           <linearGradient id="grad" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.7" />
-            <stop offset="100%" stopColor="#22d3ee" stopOpacity="0.05" />
+            <stop offset="0%" stopColor="#ef4444" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#ef4444" stopOpacity="0.05" />
           </linearGradient>
+          <pattern id="dangerPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+            <rect x="0" y="0" width="20" height="20" fill="none" stroke="#fca5a5" strokeWidth="0.5" opacity="0.3"/>
+          </pattern>
         </defs>
-        <path d="M20 30 C 120 40, 220 70, 300 120 C 380 160, 480 185, 580 190" stroke="#22d3ee" strokeWidth="3" fill="none" />
-        <path d="M20 30 L 20 190 L 580 190" stroke="#e5e7eb" strokeWidth="1" fill="none" />
-        <rect x="240" y="20" width="2" height="170" fill="#ef4444" />
-        <text x="246" y="36" fontSize="12" fill="#ef4444">5分</text>
+        
+        {/* 背景グリッド */}
+        <rect x="0" y="0" width="600" height="250" fill="url(#dangerPattern)"/>
+        
+        {/* Y軸ラベル */}
+        <text x="10" y="35" fontSize="11" fill="#6b7280">100%</text>
+        <text x="10" y="85" fontSize="11" fill="#6b7280">75%</text>
+        <text x="10" y="135" fontSize="11" fill="#6b7280">50%</text>
+        <text x="10" y="185" fontSize="11" fill="#6b7280">25%</text>
+        <text x="10" y="235" fontSize="11" fill="#6b7280">0%</text>
+        
+        {/* X軸ラベル */}
+        <text x="50" y="245" fontSize="11" fill="#6b7280">0分</text>
+        <text x="150" y="245" fontSize="11" fill="#6b7280">1分</text>
+        <text x="250" y="245" fontSize="11" fill="#6b7280">5分</text>
+        <text x="350" y="245" fontSize="11" fill="#6b7280">10分</text>
+        <text x="450" y="245" fontSize="11" fill="#6b7280">30分</text>
+        <text x="550" y="245" fontSize="11" fill="#6b7280">60分</text>
+        
+        {/* グラフエリア塗りつぶし */}
+        <path d="M50 30 L 150 35 L 250 45 L 260 140 L 350 180 L 450 200 L 580 210 L 580 220 L 50 220 Z" fill="url(#grad)" />
+        
+        {/* メインライン - 急落を強調 */}
+        <path d="M50 30 L 150 35 L 250 45 L 260 140 L 350 180 L 450 200 L 580 210" 
+              stroke="#dc2626" strokeWidth="3" fill="none" strokeDasharray="0"/>
+        
+        {/* 急落部分を強調 */}
+        <path d="M250 45 L 260 140" stroke="#b91c1c" strokeWidth="4" fill="none"/>
+        
+        {/* データポイント */}
+        <circle cx="50" cy="30" r="4" fill="#dc2626"/>
+        <circle cx="150" cy="35" r="4" fill="#dc2626"/>
+        <circle cx="250" cy="45" r="5" fill="#b91c1c" className="animate-pulse"/>
+        <circle cx="260" cy="140" r="5" fill="#991b1b" className="animate-pulse"/>
+        <circle cx="350" cy="180" r="4" fill="#dc2626"/>
+        
+        {/* 5分の危険ゾーン */}
+        <rect x="250" y="20" width="100" height="210" fill="#ef4444" opacity="0.1"/>
+        <line x1="250" y1="20" x2="250" y2="220" stroke="#dc2626" strokeWidth="2" strokeDasharray="5,5"/>
+        
+        {/* 警告テキスト */}
+        <text x="255" y="15" fontSize="14" fill="#dc2626" fontWeight="bold">5分経過</text>
+        
+        {/* 急落率表示 */}
+        <g transform="translate(280, 90)">
+          <rect x="-5" y="-15" width="80" height="30" fill="white" stroke="#dc2626" strokeWidth="2" rx="4"/>
+          <text x="35" y="0" fontSize="16" fill="#dc2626" fontWeight="bold" textAnchor="middle">-78%</text>
+          <text x="35" y="12" fontSize="10" fill="#dc2626" textAnchor="middle">返信率激減</text>
+        </g>
+        
+        {/* 軸 */}
+        <path d="M50 220 L 50 20" stroke="#9ca3af" strokeWidth="1" />
+        <path d="M50 220 L 580 220" stroke="#9ca3af" strokeWidth="1" />
       </svg>
-      <p className="text-xs text-gray-500 mt-1">5分を超えると返信率/接続率が急落。だから「60秒の一次返信」を標準化します。</p>
+      
+      <div className="mt-4 grid grid-cols-3 gap-2 text-xs">
+        <div className="bg-white/80 rounded-lg p-2 border border-red-200">
+          <div className="text-red-600 font-bold text-lg">1分以内</div>
+          <div className="text-gray-600">返信率 92%</div>
+        </div>
+        <div className="bg-red-100 rounded-lg p-2 border-2 border-red-400 animate-pulse">
+          <div className="text-red-700 font-bold text-lg">5分経過</div>
+          <div className="text-red-600 font-semibold">返信率 14%</div>
+        </div>
+        <div className="bg-white/80 rounded-lg p-2 border border-red-200">
+          <div className="text-gray-700 font-bold text-lg">30分後</div>
+          <div className="text-gray-600">返信率 5%</div>
+        </div>
+      </div>
+      
+      <div className="mt-3 p-2 bg-red-600 text-white text-center rounded-lg font-semibold text-sm">
+        ⚠️ 5分を境に78%の見込み客を失っています
+      </div>
     </div>
   );
 }
@@ -165,6 +244,61 @@ function FAQItem({ q, a, defaultOpen = false }) {
 export default function App() {
   const [progress, setProgress] = useState(0);
   const [consultOnly, setConsultOnly] = useState(false);
+  const [formData, setFormData] = useState({
+    company: '',
+    person: '',
+    email: '',
+    datetime: ''
+  });
+  const [formErrors, setFormErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [expandedValue, setExpandedValue] = useState({});
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.company.trim()) errors.company = '会社名を入力してください';
+    if (!formData.person.trim()) errors.person = 'ご担当者名を入力してください';
+    if (!formData.email.trim()) {
+      errors.email = 'メールアドレスを入力してください';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = '有効なメールアドレスを入力してください';
+    }
+    return errors;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+    
+    setIsSubmitting(true);
+    setFormErrors({});
+    
+    // 実際のAPI送信をシミュレート
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // 実際の実装では、ここでAPIを呼び出す
+      // const response = await fetch('/api/demo-request', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ ...formData, consultOnly })
+      // });
+      
+      console.log('Form submitted:', { ...formData, consultOnly });
+      setSubmitSuccess(true);
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert('送信に失敗しました。もう一度お試しください。');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     const onScroll = () => {
@@ -177,38 +311,43 @@ export default function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-950 to-black text-white">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 text-gray-900">
       <GradientBG />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur bg-slate-950/70 border-b border-white/10">
+      <header className="sticky top-0 z-50 backdrop-blur bg-white/90 border-b border-gray-200 shadow-sm">
         <div className="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-xl bg-cyan-500 grid place-items-center text-white shadow" aria-hidden><Sparkles className="h-5 w-5"/></div>
-            <div className="font-bold">Speed‑to‑Lead Ops</div>
-            <BadgeDark>AIエージェント</BadgeDark>
+            <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 grid place-items-center text-white shadow" aria-hidden><Sparkles className="h-5 w-5"/></div>
+            <div className="font-bold text-gray-900">リクゼロ</div>
+            <BadgeLight color="bg-cyan-50 text-cyan-700 border border-cyan-200">AIエージェント</BadgeLight>
           </div>
-          <nav className="hidden md:flex items-center gap-6 text-sm text-white/80">
-            <a href="#value" className="hover:text-white">価値</a>
-            <a href="#demo" className="hover:text-white">デモ</a>
-            <a href="#pricing" className="hover:text-white">価格</a>
-            <a href="#faq" className="hover:text-white">FAQ</a>
+          <nav className="hidden md:flex items-center gap-6 text-sm text-gray-600">
+            <a href="#value" className="hover:text-gray-900">価値</a>
+            <a href="#demo" className="hover:text-gray-900">デモ</a>
+            <a href="#pricing" className="hover:text-gray-900">価格</a>
+            <a href="#faq" className="hover:text-gray-900">FAQ</a>
           </nav>
           <CTAButton />
         </div>
-        <div className="h-1 bg-white/10">
-          <div className="h-1 bg-cyan-400 transition-[width]" style={{ width: `${progress * 100}%` }} />
+        <div className="h-1 bg-gray-200">
+          <div className="h-1 bg-gradient-to-r from-cyan-500 to-blue-600 transition-[width]" style={{ width: `${progress * 100}%` }} />
         </div>
       </header>
 
       {/* Hero */}
-      <section className="px-4 pt-14 pb-10">
-        <div className="mx-auto max-w-6xl grid lg:grid-cols-2 gap-10 items-center">
+      <section className="bg-gradient-to-br from-slate-900 via-slate-950 to-black text-white relative overflow-hidden">
+        <GradientBG />
+        <div className="px-4 pt-14 pb-10">
+          <div className="mx-auto max-w-6xl grid lg:grid-cols-2 gap-10 items-center relative z-10">
           <div>
             <motion.h1 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight">
               60秒で、反響が売上に変わる。
             </motion.h1>
-            <p className="mt-4 text-white/80 text-lg">AIエージェントが一次返信→候補提示→確定まで自動化。<span className="text-cyan-300 font-semibold">"今"を逃さない</span>仕組みを入れるだけ。</p>
+            <p className="mt-4 text-white/80 text-lg">
+              AIエージェントが一次返信→候補提示→確定まで自動化。<br />
+              <span className="text-cyan-300 font-semibold">"今"を逃さない</span>仕組みを入れるだけ。
+            </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <CTAButton />
               <CTAButton variant="ghost" label="3分で流れを見る" href="#demo" />
@@ -224,43 +363,275 @@ export default function App() {
             <div className="mt-4"><EvidenceChart /></div>
           </motion.div>
         </div>
-      </section>
-
-      {/* Value Props */}
-      <section id="value" className="px-4 py-16">
-        <div className="mx-auto max-w-6xl grid md:grid-cols-3 gap-6">
+        </div>
+        
+        {/* Value Props - Same dark background */}
+        <div id="value" className="px-4 py-16 border-t border-white/10">
+          <div className="mx-auto max-w-6xl grid md:grid-cols-3 gap-6">
           {[
-            { icon: <Zap className="h-6 w-6 text-cyan-400"/>, h: "即レスを標準化", p: "テンプレ・差し込み済みの一次返信を60秒以内に自動送信" },
-            { icon: <Calendar className="h-6 w-6 text-cyan-400"/>, h: "候補をその場で提示", p: "空き枠から選ぶだけ。内見/来店の確定まで誘導" },
-            { icon: <ShieldCheck className="h-6 w-6 text-cyan-400"/>, h: "ノーショー低減", p: "前日SMSと当日フォローで来訪率を引き上げ" }
+            { 
+              id: 'instant',
+              icon: <Zap className="h-6 w-6 text-cyan-400"/>, 
+              h: "即レスを標準化", 
+              p: "テンプレ・差し込み済みの一次返信を60秒以内に自動送信",
+              changes: [
+                "反響対応の遅れによる機会損失がゼロに",
+                "営業担当者が外出中でも自動で一次対応",
+                "「返事が早い会社」という信頼感を獲得"
+              ]
+            },
+            { 
+              id: 'schedule',
+              icon: <Calendar className="h-6 w-6 text-cyan-400"/>, 
+              h: "候補をその場で提示", 
+              p: "空き枠から選ぶだけ。内見/来店の確定まで誘導",
+              changes: [
+                "「後日連絡します」がなくなりその場で確定",
+                "日程調整の往復がなくなりスピードアップ",
+                "お客様の温度が高いうちにアポ獲得"
+              ]
+            },
+            { 
+              id: 'reduce',
+              icon: <ShieldCheck className="h-6 w-6 text-cyan-400"/>, 
+              h: "ノーショー低減", 
+              p: "前日SMSと当日フォローで来訪率を引き上げ",
+              changes: [
+                "ドタキャン率が大幅に減少（30%→ 5%以下）",
+                "空き枠を無駄にしない効率的な営業体制",
+                "リマインドによる顧客満足度の向上"
+              ]
+            }
           ].map((x, i) => (
-            <motion.div key={i} whileHover={{ y: -2 }} className="rounded-2xl bg-white/5 border border-white/10 p-6">
-              <div className="flex items-center gap-3">{x.icon}<div className="font-semibold">{x.h}</div></div>
+            <motion.div key={i} whileHover={{ y: -2 }} className="rounded-2xl bg-white/5 backdrop-blur border border-white/10 p-6">
+              <div className="flex items-center gap-3">{x.icon}<div className="font-semibold text-white">{x.h}</div></div>
               <p className="text-white/80 mt-2 text-sm">{x.p}</p>
-              <div className="mt-4 text-sm text-cyan-300 flex items-center gap-1">
-                これで何が変わる？<ArrowRight className="h-4 w-4"/>
-              </div>
+              <button 
+                onClick={() => setExpandedValue({...expandedValue, [x.id]: !expandedValue[x.id]})}
+                className="mt-4 text-sm text-cyan-300 flex items-center gap-1 hover:text-cyan-200 transition"
+              >
+                これで何が変わる？
+                {expandedValue[x.id] ? <ChevronUp className="h-4 w-4"/> : <ArrowRight className="h-4 w-4"/>}
+              </button>
+              <AnimatePresence>
+                {expandedValue[x.id] && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-3 pt-3 border-t border-white/10">
+                      <ul className="space-y-2">
+                        {x.changes.map((change, j) => (
+                          <li key={j} className="flex items-start gap-2 text-sm text-white/90">
+                            <CheckCircle2 className="h-4 w-4 text-emerald-400 mt-0.5 flex-shrink-0"/>
+                            <span>{change}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pain Points */}
+      <section className="px-4 py-16 bg-gradient-to-b from-gray-50 to-white text-gray-900">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 text-red-600 font-semibold mb-3">
+              <AlertCircle className="h-5 w-5"/>
+              現場のリアルな声
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">こんな課題ありませんか？</h2>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              {
+                icon: <Clock className="h-6 w-6"/>,
+                color: "from-red-500 to-orange-500",
+                borderColor: "border-red-200",
+                bgColor: "bg-red-50",
+                title: "反響対応が遅い",
+                problems: [
+                  "担当者が外出中で返信が翌日に",
+                  "他社に先を越される",
+                  "5分過ぎると返信率が半減"
+                ],
+                stat: "72%",
+                statLabel: "の企業が\n返信遅れを課題に"
+              },
+              {
+                icon: <TrendingDown className="h-6 w-6"/>,
+                color: "from-purple-500 to-pink-500",
+                borderColor: "border-purple-200",
+                bgColor: "bg-purple-50",
+                title: "アポ獲得率が低い",
+                problems: [
+                  "日程調整の往復で温度下がる",
+                  "「検討します」で終わる",
+                  "具体的な提案ができない"
+                ],
+                stat: "68%",
+                statLabel: "がアポ獲得の\n難しさを実感"
+              },
+              {
+                icon: <XCircle className="h-6 w-6"/>,
+                color: "from-blue-500 to-cyan-500",
+                borderColor: "border-blue-200",
+                bgColor: "bg-blue-50",
+                title: "ドタキャン多発",
+                problems: [
+                  "予約を忘れられる",
+                  "リマインドができていない",
+                  "空き枠が無駄になる"
+                ],
+                stat: "30%",
+                statLabel: "の予約が\nノーショーに"
+              },
+              {
+                icon: <Users className="h-6 w-6"/>,
+                color: "from-green-500 to-emerald-500",
+                borderColor: "border-green-200",
+                bgColor: "bg-green-50",
+                title: "属人化が問題",
+                problems: [
+                  "特定の人しか対応できない",
+                  "休みの日は対応が止まる",
+                  "新人には任せられない"
+                ],
+                stat: "81%",
+                statLabel: "が人手不足を\n深刻な課題に"
+              }
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className={`relative rounded-2xl ${item.bgColor} ${item.borderColor} border-2 p-5 hover:shadow-lg transition-all`}
+              >
+                <div className={`absolute -top-3 -right-3 h-12 w-12 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center text-white shadow-lg`}>
+                  {item.icon}
+                </div>
+                
+                <h3 className="font-bold text-lg mb-3">{item.title}</h3>
+                
+                <ul className="space-y-2 mb-4">
+                  {item.problems.map((problem, j) => (
+                    <li key={j} className="flex items-start gap-2 text-sm text-gray-700">
+                      <span className="text-red-400 mt-1">•</span>
+                      <span>{problem}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <div className="pt-3 border-t border-gray-200">
+                  <div className="flex items-baseline gap-2">
+                    <span className={`text-3xl font-extrabold bg-gradient-to-r ${item.color} bg-clip-text text-transparent`}>
+                      {item.stat}
+                    </span>
+                    <span className="text-xs text-gray-600 whitespace-pre-line">{item.statLabel}</span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            className="mt-10 p-6 rounded-3xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-center"
+          >
+            <div className="max-w-2xl mx-auto">
+              <h3 className="text-2xl font-bold mb-3">
+                これらの課題を放置すると...
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                {[
+                  { icon: <TrendingDown className="h-5 w-5"/>, text: "売上機会の損失" },
+                  { icon: <Users className="h-5 w-5"/>, text: "競合他社に流出" },
+                  { icon: <AlertCircle className="h-5 w-5"/>, text: "現場の疲弊" }
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center justify-center gap-2 bg-white/20 rounded-xl px-4 py-3">
+                    {item.icon}
+                    <span className="font-semibold">{item.text}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-6 text-white/90">
+                だからこそ、<span className="font-bold text-yellow-300">リクゼロ</span>が必要です
+              </p>
+              <div className="mt-6">
+                <CTAButton label="今すぐ解決法を見る" href="#demo" variant="ghost" className="font-bold text-lg px-8 py-4"/>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Demo Flow */}
       <section id="demo" className="px-4 py-16 bg-white text-gray-900">
         <div className="mx-auto max-w-6xl">
-          <div className="flex items-center gap-2 text-gray-500 text-sm"><Sparkles className="h-4 w-4"/>3ステップで理解</div>
-          <h2 className="mt-2 text-3xl sm:text-4xl font-bold tracking-tight">反響→即レス→確定 までの最短ルート</h2>
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 text-cyan-600 font-semibold mb-3">
+              <Sparkles className="h-5 w-5"/>
+              リクゼロが解決
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">反響→即レス→確定 までの最短ルート</h2>
+            <p className="text-gray-600 mt-3">上記の課題を全て解決する3ステップ</p>
+          </div>
           <div className="mt-8 grid lg:grid-cols-3 gap-6">
             {[
-              { title: "Step 1｜反響を捕まえる", p: "メール/フォーム反響を即時に取り込み、重複や迷惑を除外" },
-              { title: "Step 2｜AIが会話", p: "テンプレ＋差し込みで一次返信→希望日ヒア→候補提示" },
-              { title: "Step 3｜確定まで", p: "予約確定→前日SMS→当日案内。ログ化まで自動" }
+              { 
+                icon: <MessageSquare className="h-8 w-8 text-cyan-500"/>,
+                title: "Step 1｜反響を捕まえる", 
+                p: "メール/フォーム反響を即時に取り込み、重複や迷惑を除外",
+                demo: "実際の反響メールを使って取込みを実演"
+              },
+              { 
+                icon: <Sparkles className="h-8 w-8 text-cyan-500"/>,
+                title: "Step 2｜AIが会話", 
+                p: "テンプレ＋差し込みで一次返信→希望日ヒア→候補提示",
+                demo: "AIが60秒以内に返信する様子をライブで確認"
+              },
+              { 
+                icon: <Calendar className="h-8 w-8 text-cyan-500"/>,
+                title: "Step 3｜確定まで", 
+                p: "予約確定→前日SMS→当日案内。ログ化まで自動",
+                demo: "予約管理画面とSMS送信の流れを解説"
+              }
             ].map((s, i) => (
-              <Card key={i} className="hover:shadow-lg transition">
-                <div className="text-sm text-gray-500">{s.title}</div>
-                <p className="mt-2 text-gray-700">{s.p}</p>
-                <div className="mt-4"><a href="#book" className="text-cyan-700 font-semibold hover:underline">この流れでデモする</a></div>
-              </Card>
+              <motion.div 
+                key={i} 
+                whileHover={{ y: -4 }}
+                className="group"
+              >
+                <div className="bg-white rounded-2xl border-2 border-gray-200 hover:border-cyan-300 shadow-sm hover:shadow-xl transition-all h-full p-6 sm:p-8">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      {s.icon}
+                    </div>
+                    <div className="flex-grow">
+                      <div className="text-sm text-gray-600 font-bold">{s.title}</div>
+                      <p className="mt-2 text-gray-700">{s.p}</p>
+                      <div className="mt-4 p-3 rounded-xl bg-gradient-to-r from-cyan-50 to-blue-50 border border-cyan-200">
+                        <div className="flex items-center gap-2 text-xs text-cyan-700 font-semibold">
+                          <ArrowRight className="h-4 w-4"/>
+                          デモで見れること
+                        </div>
+                        <p className="mt-1 text-sm text-gray-600">{s.demo}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             ))}
           </div>
 
@@ -293,22 +664,33 @@ export default function App() {
             </Card>
           </div>
 
-          <div className="mt-8 text-center"><CTAButton label="デモ枠を確保する" href="#book" variant="lite"/></div>
+          <div className="mt-8 p-6 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-center">
+            <div className="text-2xl font-bold">10分で全てが分かる</div>
+            <p className="mt-2 text-white/90">実際の画面を見ながら、御社のケースでどう使えるかご説明します</p>
+            <div className="mt-4"><CTAButton label="デモ枠を確保する" href="#book" variant="ghost"/></div>
+          </div>
         </div>
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="px-4 py-16">
+      <section id="pricing" className="px-4 py-16 bg-gradient-to-b from-white to-gray-50">
         <div className="mx-auto max-w-6xl">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">価格・期間・保証</h2>
-          <p className="text-white/70 mt-2">初回2社は未達返金保証（条件あり）。</p>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">価格・期間・保証</h2>
+          <div className="mt-2 flex flex-wrap items-center gap-3">
+            <BadgeLight color="bg-cyan-50 text-cyan-700 border border-cyan-200"><Sparkles className="h-3.5 w-3.5"/>先着5社限定価格</BadgeLight>
+            <p className="text-gray-600">通常価格より最大70%OFF + 返金保証付き</p>
+          </div>
           <div className="mt-8 grid md:grid-cols-2 gap-6">
-            <motion.div whileHover={{ y: -2 }} className="rounded-2xl bg-white p-6 border border-gray-200 shadow ring-1 ring-black/5 text-gray-900">
+            <motion.div whileHover={{ y: -2 }} className="rounded-2xl bg-white p-6 border-2 border-cyan-500 shadow-lg ring-2 ring-cyan-100 text-gray-900 relative overflow-hidden">
+              <div className="absolute -top-10 -right-10 h-24 w-24 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-full opacity-10"/>
               <div className="flex items-baseline justify-between">
                 <h3 className="text-xl font-bold">A｜即レススターター</h3>
-                <BadgeLight>1週間</BadgeLight>
+                <BadgeLight color="bg-cyan-50 text-cyan-700 border border-cyan-200">限定価格</BadgeLight>
               </div>
-              <div className="mt-3 text-4xl font-extrabold tracking-tight">15<span className="text-2xl align-top">万円</span></div>
+              <div className="mt-3">
+                <span className="text-gray-400 line-through text-lg">50万円</span>
+                <div className="text-4xl font-extrabold tracking-tight text-cyan-600">15<span className="text-2xl align-top">万円</span></div>
+              </div>
               <ul className="mt-4 space-y-2 text-gray-700 text-sm">
                 {['反響取込の設定','一次返信テンプレ（差し込み）','候補提示リンク生成','前日SMS'].map((t,i)=>(
                   <li key={i} className="flex gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-500"/>{t}</li>
@@ -321,7 +703,10 @@ export default function App() {
                 <h3 className="text-xl font-bold">B｜内見までPoC</h3>
                 <BadgeLight color="bg-emerald-50 text-emerald-700 border border-emerald-200">2週間</BadgeLight>
               </div>
-              <div className="mt-3 text-4xl font-extrabold tracking-tight">50<span className="text-2xl align-top">万円</span></div>
+              <div className="mt-3">
+                <span className="text-gray-400 line-through text-lg">120万円</span>
+                <div className="text-4xl font-extrabold tracking-tight">50<span className="text-2xl align-top">万円</span></div>
+              </div>
               <ul className="mt-4 space-y-2 text-gray-700 text-sm">
                 {['条件ヒア→代替提案','在庫連携（SS/DB）','内見予約確定・通知','再接触タイマー（48h/7日/30日）'].map((t,i)=>(
                   <li key={i} className="flex gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-500"/>{t}</li>
@@ -330,12 +715,21 @@ export default function App() {
               <div className="mt-6"><CTAButton label="このプランで相談" href="#book" variant="lite"/></div>
             </motion.div>
           </div>
-          <p className="mt-4 text-xs text-white/60">※条件例：反響件数の一定以上／カレンダー承認可能／必要設定完了 など。</p>
+          <div className="mt-6 rounded-2xl bg-gradient-to-r from-emerald-50 to-cyan-50 border border-emerald-200 p-4">
+            <div className="flex items-start gap-3">
+              <ShieldCheck className="h-5 w-5 text-emerald-600 mt-0.5"/>
+              <div>
+                <div className="text-gray-900 font-semibold">30日間返金保証</div>
+                <p className="text-gray-600 text-sm mt-1">KPI未達の場合は全額返金。リスクなしでお試しいただけます。</p>
+              </div>
+            </div>
+          </div>
+          <p className="mt-4 text-xs text-gray-500">※返金条件：反響件数の一定以上／カレンダー承認可能／必要設定完了 など。</p>
         </div>
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="px-4 py-16 bg-white text-gray-900">
+      <section id="faq" className="px-4 py-16 bg-gray-50">
         <div className="mx-auto max-w-6xl">
           <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">よくある質問</h2>
           <div className="mt-6 grid md:grid-cols-2 gap-4">
@@ -349,40 +743,122 @@ export default function App() {
       </section>
 
       {/* Book Demo */}
-      <section id="book" className="px-4 py-16">
+      <section id="book" className="px-4 py-16 bg-gradient-to-b from-gray-50 to-white">
         <div className="mx-auto max-w-6xl">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">10分デモを予約</h2>
-          <p className="text-white/70 mt-2">空き枠から選ぶだけ。最短当日で実演。</p>
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">10分デモを予約</h2>
+          <p className="text-gray-600 mt-2">空き枠から選ぶだけ。最短当日で実演。</p>
           <div className="mt-6 rounded-2xl bg-white p-6 border border-gray-200 text-gray-900">
-            <form className="grid sm:grid-cols-2 gap-4" onSubmit={(e)=>e.preventDefault()}>
+            {submitSuccess ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-8"
+              >
+                <CheckCircle2 className="h-12 w-12 text-emerald-500 mx-auto"/>
+                <h3 className="text-2xl font-bold mt-4">送信完了しました</h3>
+                <p className="text-gray-600 mt-2">担当者より1営業日以内にご連絡いたします。</p>
+                <button
+                  onClick={() => {
+                    setSubmitSuccess(false);
+                    setFormData({ company: '', person: '', email: '', datetime: '' });
+                  }}
+                  className="mt-4 text-cyan-600 hover:underline"
+                >
+                  別の日程で再度予約する
+                </button>
+              </motion.div>
+            ) : (
+            <form className="grid sm:grid-cols-2 gap-4" onSubmit={handleSubmit}>
               <div>
-                <label className="text-sm text-gray-600" htmlFor="company">会社名</label>
-                <input id="company" className="mt-1 w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-300" placeholder="株式会社〇〇"/>
+                <label className="text-sm text-gray-600" htmlFor="company">会社名 <span className="text-red-500">*</span></label>
+                <input 
+                  id="company" 
+                  value={formData.company}
+                  onChange={(e) => {
+                    setFormData({...formData, company: e.target.value});
+                    if (formErrors.company) setFormErrors({...formErrors, company: ''});
+                  }}
+                  className={`mt-1 w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-300 ${
+                    formErrors.company ? 'border-red-500' : 'border-gray-300'
+                  }`} 
+                  placeholder="株式会社〇〇"/>
+                {formErrors.company && <p className="text-red-500 text-xs mt-1">{formErrors.company}</p>}
               </div>
               <div>
-                <label className="text-sm text-gray-600" htmlFor="person">ご担当者名</label>
-                <input id="person" className="mt-1 w-full rounded-xl border border-gray-300 px-3 py-2" placeholder="山田 太郎"/>
+                <label className="text-sm text-gray-600" htmlFor="person">ご担当者名 <span className="text-red-500">*</span></label>
+                <input 
+                  id="person" 
+                  value={formData.person}
+                  onChange={(e) => {
+                    setFormData({...formData, person: e.target.value});
+                    if (formErrors.person) setFormErrors({...formErrors, person: ''});
+                  }}
+                  className={`mt-1 w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-300 ${
+                    formErrors.person ? 'border-red-500' : 'border-gray-300'
+                  }`} 
+                  placeholder="山田 太郎"/>
+                {formErrors.person && <p className="text-red-500 text-xs mt-1">{formErrors.person}</p>}
               </div>
               <div>
-                <label className="text-sm text-gray-600" htmlFor="email">メール</label>
-                <input id="email" type="email" className="mt-1 w-full rounded-xl border border-gray-300 px-3 py-2" placeholder="example@company.jp"/>
+                <label className="text-sm text-gray-600" htmlFor="email">メール <span className="text-red-500">*</span></label>
+                <input 
+                  id="email" 
+                  type="email" 
+                  value={formData.email}
+                  onChange={(e) => {
+                    setFormData({...formData, email: e.target.value});
+                    if (formErrors.email) setFormErrors({...formErrors, email: ''});
+                  }}
+                  className={`mt-1 w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-300 ${
+                    formErrors.email ? 'border-red-500' : 'border-gray-300'
+                  }`} 
+                  placeholder="example@company.jp"/>
+                {formErrors.email && <p className="text-red-500 text-xs mt-1">{formErrors.email}</p>}
               </div>
-              <div>
-                <label className="text-sm text-gray-600 flex items-center gap-2" htmlFor="consultOnly">
-                  <input id="consultOnly" type="checkbox" className="h-4 w-4" checked={consultOnly} onChange={(e)=>setConsultOnly(e.target.checked)} />
-                  話だけ聞きたい（日時は後で調整）
-                </label>
+              <div className="sm:col-span-2">
+                <div className="rounded-xl bg-cyan-50 border border-cyan-200 p-4">
+                  <label className="flex items-start gap-3 cursor-pointer" htmlFor="consultOnly">
+                    <input 
+                      id="consultOnly" 
+                      type="checkbox" 
+                      className="h-5 w-5 mt-0.5 cursor-pointer accent-cyan-600" 
+                      checked={consultOnly} 
+                      onChange={(e)=>setConsultOnly(e.target.checked)} 
+                    />
+                    <div>
+                      <div className="font-semibold text-gray-900">まずは話だけ聞きたい</div>
+                      <div className="text-sm text-gray-600 mt-1">日時は後日調整します。資料や概要説明を希望の方はこちらを選択してください。</div>
+                    </div>
+                  </label>
+                </div>
               </div>
               <div className="sm:col-span-2">
                 <label className="text-sm text-gray-600" htmlFor="dt">希望日時（任意）</label>
-                <input id="dt" type="datetime-local" disabled={consultOnly} className={`mt-1 w-full rounded-xl border px-3 py-2 ${consultOnly ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed' : 'border-gray-300'}`}/>
+                <input 
+                  id="dt" 
+                  type="datetime-local" 
+                  value={formData.datetime}
+                  onChange={(e) => setFormData({...formData, datetime: e.target.value})}
+                  disabled={consultOnly} 
+                  className={`mt-1 w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-300 ${consultOnly ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed' : 'border-gray-300'}`}/>
                 <p className="mt-1 text-xs text-gray-500">※チェック済みの場合は未入力のままでOKです。</p>
               </div>
               <div className="sm:col-span-2 flex flex-wrap items-center gap-3">
-                <button type="submit" className="rounded-2xl bg-gray-900 text-white px-5 py-3 font-semibold hover:bg-black">送信して仮押さえ</button>
-                <span className="text-xs text-gray-500 flex items-center gap-1"><PhoneCall className="h-3.5 w-3.5"/>緊急の方は 03-xxxx-xxxx</span>
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className={`rounded-2xl px-5 py-3 font-semibold transition ${
+                    isSubmitting 
+                      ? 'bg-gray-400 text-white cursor-not-allowed' 
+                      : 'bg-gray-900 text-white hover:bg-black'
+                  }`}
+                >
+                  {isSubmitting ? '送信中...' : '送信して仮押さえ'}
+                </button>
+                <span className="text-xs text-gray-500 flex items-center gap-1"><PhoneCall className="h-3.5 w-3.5"/>緊急の方は 080-7798-1037</span>
               </div>
             </form>
+            )}
           </div>
         </div>
       </section>
@@ -398,11 +874,15 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className="py-14 px-4">
+      <footer className="py-14 px-4 bg-gradient-to-b from-slate-900 to-black">
         <div className="mx-auto max-w-6xl grid md:grid-cols-3 gap-6 text-white/80">
           <div>
-            <div className="text-white font-bold">Speed‑to‑Lead Ops</div>
+            <div className="text-white font-bold">リクゼロ</div>
             <p className="mt-2 text-sm">反響の一次対応を60秒で。"今"に強い現場をつくる。</p>
+            <div className="mt-3 flex items-center gap-2">
+              <BadgeDark><Sparkles className="h-3.5 w-3.5"/>先着5社限定</BadgeDark>
+              <span className="text-xs text-white/60">残り3枠</span>
+            </div>
           </div>
           <div className="text-sm">
             <div className="text-white font-semibold">コンプライアンス</div>
@@ -414,10 +894,12 @@ export default function App() {
           </div>
           <div className="text-sm">
             <div className="text-white font-semibold">お問い合わせ</div>
-            <p className="mt-2">demo@example.co.jp</p>
+            <p className="mt-2">demo@speed-to-lead.jp</p>
+            <p className="mt-1">080-7798-1037</p>
+            <p className="mt-1 text-xs">平日 10:00-18:00</p>
           </div>
         </div>
-        <div className="mx-auto max-w-6xl mt-8 text-xs text-white/60">© {new Date().getFullYear()} Speed‑to‑Lead Ops</div>
+        <div className="mx-auto max-w-6xl mt-8 text-xs text-white/60">© {new Date().getFullYear()} リクゼロ</div>
       </footer>
     </div>
   );
