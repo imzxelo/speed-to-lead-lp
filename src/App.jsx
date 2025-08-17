@@ -281,34 +281,71 @@ export default function App() {
     setFormErrors({});
     
     try {
-      // EmailJS初期化
-      emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "YOUR_PUBLIC_KEY");
+      // PHP送信とEmailJSのハイブリッド対応
+      const usePHP = import.meta.env.VITE_USE_PHP === 'true' || false;
       
-      const templateParams = {
-        to_email: 'contact@rikuzero.jp',
-        from_name: formData.person,
-        company_name: formData.company,
-        reply_to: formData.email,
-        datetime: formData.datetime || '後日調整',
-        consult_only: consultOnly ? 'はい（話だけ聞きたい）' : 'いいえ（デモ希望）',
-        message: `
+      if (usePHP) {
+        // PHP/SMTP送信（ロリポップ環境）
+        const formDataToSend = new FormData();
+        formDataToSend.append('name', formData.person);
+        formDataToSend.append('email', formData.email);
+        formDataToSend.append('company', formData.company);
+        formDataToSend.append('datetime', formData.datetime || '後日調整');
+        formDataToSend.append('consultOnly', consultOnly ? '1' : '0');
+        formDataToSend.append('message', `
 会社名: ${formData.company}
 ご担当者名: ${formData.person}
 メールアドレス: ${formData.email}
 希望日時: ${formData.datetime || '後日調整'}
 話だけ聞きたい: ${consultOnly ? 'はい' : 'いいえ'}
-        `.trim()
-      };
-      
-      // EmailJS送信
-      await emailjs.send(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID',
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID',
-        templateParams
-      );
+        `.trim());
+        
+        // CSRFトークンを取得（PHPセッション）
+        const tokenResponse = await fetch('/get-csrf-token.php');
+        const tokenData = await tokenResponse.json();
+        formDataToSend.append('csrf_token', tokenData.token);
+        
+        const response = await fetch('/send.php', {
+          method: 'POST',
+          body: formDataToSend,
+          credentials: 'same-origin'
+        });
+        
+        if (response.ok) {
+          setSubmitSuccess(true);
+        } else {
+          throw new Error('送信に失敗しました');
+        }
+      } else {
+        // EmailJS送信（開発環境/GitHub Pages）
+        emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "YOUR_PUBLIC_KEY");
+        
+        const templateParams = {
+          to_email: 'contact@rikuzero.jp',
+          from_name: formData.person,
+          company_name: formData.company,
+          reply_to: formData.email,
+          datetime: formData.datetime || '後日調整',
+          consult_only: consultOnly ? 'はい（話だけ聞きたい）' : 'いいえ（デモ希望）',
+          message: `
+会社名: ${formData.company}
+ご担当者名: ${formData.person}
+メールアドレス: ${formData.email}
+希望日時: ${formData.datetime || '後日調整'}
+話だけ聞きたい: ${consultOnly ? 'はい' : 'いいえ'}
+          `.trim()
+        };
+        
+        await emailjs.send(
+          import.meta.env.VITE_EMAILJS_SERVICE_ID || 'YOUR_SERVICE_ID',
+          import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'YOUR_TEMPLATE_ID',
+          templateParams
+        );
+        
+        setSubmitSuccess(true);
+      }
       
       console.log('Form submitted:', { ...formData, consultOnly });
-      setSubmitSuccess(true);
     } catch (error) {
       console.error('Submission error:', error);
       alert('送信に失敗しました。もう一度お試しください。');
