@@ -281,40 +281,35 @@ export default function App() {
     setFormErrors({});
     
     try {
-      // PHP送信とEmailJSのハイブリッド対応
-      const usePHP = import.meta.env.VITE_USE_PHP === 'true' || false;
+      // ロリポップサーバーかどうかを判定
+      const isLolipop = window.location.hostname === 'rikuzero.jp' || 
+                        window.location.hostname === 'www.rikuzero.jp';
       
-      if (usePHP) {
+      if (isLolipop) {
         // PHP/SMTP送信（ロリポップ環境）
-        const formDataToSend = new FormData();
-        formDataToSend.append('name', formData.person);
-        formDataToSend.append('email', formData.email);
-        formDataToSend.append('company', formData.company);
-        formDataToSend.append('datetime', formData.datetime || '後日調整');
-        formDataToSend.append('consultOnly', consultOnly ? '1' : '0');
-        formDataToSend.append('message', `
-会社名: ${formData.company}
-ご担当者名: ${formData.person}
-メールアドレス: ${formData.email}
-希望日時: ${formData.datetime || '後日調整'}
-話だけ聞きたい: ${consultOnly ? 'はい' : 'いいえ'}
-        `.trim());
-        
-        // CSRFトークンを取得（PHPセッション）
-        const tokenResponse = await fetch('/get-csrf-token.php');
-        const tokenData = await tokenResponse.json();
-        formDataToSend.append('csrf_token', tokenData.token);
+        const sendData = {
+          name: formData.person,
+          email: formData.email,
+          company: formData.company,
+          datetime: formData.datetime || '後日調整',
+          consultOnly: consultOnly ? '1' : '0',
+          message: `デモ予約フォームからのお問い合わせ`
+        };
         
         const response = await fetch('/send.php', {
           method: 'POST',
-          body: formDataToSend,
-          credentials: 'same-origin'
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(sendData)
         });
         
-        if (response.ok) {
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
           setSubmitSuccess(true);
         } else {
-          throw new Error('送信に失敗しました');
+          throw new Error(result.error || '送信に失敗しました');
         }
       } else {
         // EmailJS送信（開発環境/GitHub Pages）
@@ -348,7 +343,7 @@ export default function App() {
       console.log('Form submitted:', { ...formData, consultOnly });
     } catch (error) {
       console.error('Submission error:', error);
-      alert('送信に失敗しました。もう一度お試しください。');
+      alert(error.message || '送信に失敗しました。もう一度お試しください。');
     } finally {
       setIsSubmitting(false);
     }
